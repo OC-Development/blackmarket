@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoreX Black Market</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- NOTE: no background on body (FiveM preference) -->
+  <div id="app" class="cx-root hidden">
+    <div class="cx-panel">
+      <div class="cx-navbar">
+        <div class="brand">
+          <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12L5 10L9 14L19 4L21 6L9 18L3 12Z"/></svg>
+          <span>Black Market</span>
+        </div>
+        <div class="tabs">
+          <button id="tab-buy" class="tab active">Buy</button>
+          <button id="tab-sell" class="tab">Sell</button>
+        </div>
+        <div class="status" id="status"></div>
+      </div>
+
+      <div class="cx-content">
+        <!-- BUY VIEW (no categories, just gallery) -->
+        <div id="view-buy" class="view">
+          <div class="grid" id="buy-grid"></div>
+        </div>
+
+        <!-- SELL VIEW (whitelisted items only) -->
+        <div id="view-sell" class="view hidden">
+          <div class="grid" id="sell-grid"></div>
+        </div>
+      </div>
+
+      <div class="cx-footer">
+        <button class="ghost" id="close-btn">Close (ESC)</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
