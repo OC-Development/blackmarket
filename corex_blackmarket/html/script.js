@@ -14,7 +14,6 @@ const BlackMarketApp = (() => {
   const elements = {
     root: document.getElementById('app'),
     loading: document.getElementById('loading'),
-    status: document.getElementById('status'),
     toast: document.getElementById('toast'),
     
     // Tabs
@@ -48,22 +47,63 @@ const BlackMarketApp = (() => {
       return `${symbol} $${utils.formatNumber(value)}`;
     },
 
-    createElement: (tag, className, content) => {
-      const element = document.createElement(tag);
-      if (className) element.className = className;
-      if (content) element.textContent = content;
-      return element;
-    },
+    getItemIcon: (itemName, category) => {
+      const iconMap = {
+        // Weapons
+        'pistol': 'fas fa-gun',
+        'rifle': 'fas fa-crosshairs',
+        'weapon': 'fas fa-bomb',
+        
+        // Ammo
+        'ammo': 'fas fa-bullseye',
+        'pistol_ammo': 'fas fa-bullseye',
+        'rifle_ammo': 'fas fa-bullseye',
+        
+        // Tools
+        'lockpick': 'fas fa-key',
+        'advanced_lockpick': 'fas fa-unlock-alt',
+        'drill': 'fas fa-tools',
+        
+        // Armor & Protection
+        'armor': 'fas fa-shield-alt',
+        'vest': 'fas fa-user-shield',
+        
+        // Electronics
+        'phone': 'fas fa-mobile-alt',
+        'laptop': 'fas fa-laptop',
+        'radio': 'fas fa-broadcast-tower',
+        
+        // Drugs & Consumables
+        'weed': 'fas fa-leaf',
+        'cocaine': 'fas fa-pills',
+        'meth': 'fas fa-flask',
+        
+        // Materials
+        'copper': 'fas fa-coins',
+        'gold': 'fas fa-gem',
+        'steel': 'fas fa-cog',
+        
+        // Default categories
+        'weapons': 'fas fa-crosshairs',
+        'ammo': 'fas fa-bullseye',
+        'tools': 'fas fa-wrench',
+        'consumables': 'fas fa-pills',
+        'attachments': 'fas fa-paperclip'
+      };
 
-    playSound: (type) => {
-      // Placeholder for sound effects
-      console.log(`Playing sound: ${type}`);
-    },
-
-    vibrate: (pattern = [100]) => {
-      if (navigator.vibrate) {
-        navigator.vibrate(pattern);
+      // Try exact match first
+      if (iconMap[itemName]) return iconMap[itemName];
+      
+      // Try category match
+      if (category && iconMap[category]) return iconMap[category];
+      
+      // Try partial matches
+      for (const [key, icon] of Object.entries(iconMap)) {
+        if (itemName.toLowerCase().includes(key)) return icon;
       }
+      
+      // Default icon
+      return 'fas fa-box';
     }
   };
 
@@ -80,12 +120,10 @@ const BlackMarketApp = (() => {
       messageEl.textContent = message;
 
       // Set type
-      toastEl.className = `toast-notification ${type}`;
+      toastEl.className = `toast ${type}`;
 
       // Show toast
       toastEl.classList.remove('hidden');
-      utils.playSound(type);
-      utils.vibrate(type === 'success' ? [100] : [100, 50, 100]);
 
       // Auto hide
       const hideTimeout = setTimeout(() => {
@@ -104,13 +142,12 @@ const BlackMarketApp = (() => {
     },
 
     success: (title, message) => toast.show('success', title, message),
-    error: (title, message) => toast.show('error', title, message),
-    warning: (title, message) => toast.show('warning', title, message)
+    error: (title, message) => toast.show('error', title, message)
   };
 
   // Loading System
   const loading = {
-    show: (message = 'ESTABLISHING SECURE CONNECTION...') => {
+    show: (message = 'Loading...') => {
       state.isLoading = true;
       const loadingText = elements.loading.querySelector('.loading-text');
       loadingText.textContent = message;
@@ -137,10 +174,6 @@ const BlackMarketApp = (() => {
       // Update views
       elements.viewBuy.classList.toggle('hidden', tabName !== 'buy');
       elements.viewSell.classList.toggle('hidden', tabName !== 'sell');
-      
-      // Play sound
-      utils.playSound('tab_switch');
-      utils.vibrate([50]);
     }
   };
 
@@ -149,26 +182,25 @@ const BlackMarketApp = (() => {
     createItemCard: (item, type = 'buy') => {
       const card = document.createElement('div');
       card.className = 'item-card';
-      
-      // Add hover effects
-      card.addEventListener('mouseenter', () => {
-        utils.playSound('hover');
-      });
 
       const content = document.createElement('div');
       content.className = 'card-content';
 
-      // Image
+      // Image/Icon
       const imageContainer = document.createElement('div');
       imageContainer.className = 'card-image';
       
-      const image = document.createElement('img');
-      image.src = item.image ? `assets/${item.image}` : 'assets/tools.svg';
-      image.alt = item.label;
-      image.onerror = () => {
-        image.src = 'assets/tools.svg';
-      };
-      imageContainer.appendChild(image);
+      if (item.image && item.image !== '') {
+        const image = document.createElement('img');
+        image.src = `assets/${item.image}`;
+        image.alt = item.label;
+        image.onerror = () => {
+          imageContainer.innerHTML = `<i class="${utils.getItemIcon(item.name, item.category)}"></i>`;
+        };
+        imageContainer.appendChild(image);
+      } else {
+        imageContainer.innerHTML = `<i class="${utils.getItemIcon(item.name, item.category)}"></i>`;
+      }
 
       // Info
       const info = document.createElement('div');
@@ -187,10 +219,10 @@ const BlackMarketApp = (() => {
       if (type === 'buy') {
         const typeSpan = document.createElement('span');
         typeSpan.className = `card-type ${item.type || 'regular'}`;
-        typeSpan.textContent = item.type === 'black' ? 'BLACK MARKET' : 'REGULAR';
+        typeSpan.textContent = item.type === 'black' ? 'Black Market' : 'Regular';
         subtitle.appendChild(typeSpan);
       } else {
-        subtitle.textContent = `Unit Price: ${utils.formatCurrency(item.unitPrice || 0)}`;
+        subtitle.innerHTML = `<i class="fas fa-tag"></i> Unit Price: ${utils.formatCurrency(item.unitPrice || 0)}`;
       }
 
       header.appendChild(title);
@@ -207,7 +239,7 @@ const BlackMarketApp = (() => {
 
         const buyBtn = document.createElement('button');
         buyBtn.className = 'action-btn buy';
-        buyBtn.innerHTML = '<span>🛒</span> ACQUIRE';
+        buyBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Buy';
         buyBtn.onclick = (e) => {
           e.stopPropagation();
           actions.buyItem(item);
@@ -223,7 +255,7 @@ const BlackMarketApp = (() => {
 
         const sellBtn = document.createElement('button');
         sellBtn.className = 'action-btn sell';
-        sellBtn.innerHTML = '<span>💰</span> LIQUIDATE';
+        sellBtn.innerHTML = '<i class="fas fa-hand-holding-usd"></i> Sell';
         sellBtn.onclick = (e) => {
           e.stopPropagation();
           actions.sellItem(item);
@@ -243,17 +275,14 @@ const BlackMarketApp = (() => {
       return card;
     },
 
-    createEmptyCard: (message, icon = '📦') => {
+    createEmptyCard: (message, icon = 'fas fa-box-open') => {
       const card = document.createElement('div');
       card.className = 'item-card empty-card';
-      card.style.textAlign = 'center';
-      card.style.padding = '40px 20px';
-      card.style.opacity = '0.7';
 
       card.innerHTML = `
-        <div style="font-size: 48px; margin-bottom: 15px;">${icon}</div>
-        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">No Items Available</div>
-        <div style="font-size: 14px; color: var(--text-muted);">${message}</div>
+        <i class="${icon}"></i>
+        <div class="empty-title">No Items Available</div>
+        <div class="empty-message">${message}</div>
       `;
 
       return card;
@@ -263,9 +292,6 @@ const BlackMarketApp = (() => {
   // Actions
   const actions = {
     buyItem: (item) => {
-      utils.playSound('click');
-      utils.vibrate([100]);
-      
       // Send to game
       fetch(`https://${GetParentResourceName()}/buy`, {
         method: 'POST',
@@ -278,9 +304,6 @@ const BlackMarketApp = (() => {
     },
 
     sellItem: (item) => {
-      utils.playSound('click');
-      utils.vibrate([100]);
-      
       // Send to game
       fetch(`https://${GetParentResourceName()}/sell`, {
         method: 'POST',
@@ -304,7 +327,7 @@ const BlackMarketApp = (() => {
       ];
 
       if (allItems.length === 0) {
-        grid.appendChild(cards.createEmptyCard('The market is currently restocking', '🔒'));
+        grid.appendChild(cards.createEmptyCard('The market is currently restocking', 'fas fa-store-slash'));
         return;
       }
 
@@ -326,14 +349,14 @@ const BlackMarketApp = (() => {
       grid.innerHTML = '';
 
       if (!state.data.sell.enabled) {
-        grid.appendChild(cards.createEmptyCard('Liquidation services temporarily unavailable', '🚫'));
+        grid.appendChild(cards.createEmptyCard('Selling services are temporarily unavailable', 'fas fa-ban'));
         return;
       }
 
       const sellItems = Object.entries(state.data.sell.items || {});
       
       if (sellItems.length === 0) {
-        grid.appendChild(cards.createEmptyCard('No items available for liquidation', '📦'));
+        grid.appendChild(cards.createEmptyCard('No items available for sale', 'fas fa-inbox'));
         return;
       }
 
@@ -358,13 +381,10 @@ const BlackMarketApp = (() => {
       
       state.isOpen = true;
       elements.root.classList.remove('hidden');
-      loading.show('ACCESSING BLACK MARKET...');
+      loading.show('Connecting to market...');
       
       // Switch to buy tab by default
       tabs.switch('buy');
-      
-      utils.playSound('open');
-      utils.vibrate([200, 100, 200]);
     },
 
     close: () => {
@@ -379,8 +399,6 @@ const BlackMarketApp = (() => {
       fetch(`https://${GetParentResourceName()}/close`, {
         method: 'POST'
       }).catch(console.error);
-      
-      utils.playSound('close');
     },
 
     updateData: (newData) => {
@@ -392,10 +410,6 @@ const BlackMarketApp = (() => {
         },
         sell: newData.sell || { enabled: false, items: {}, multiplier: 1.0 }
       };
-
-      // Update status
-      const totalItems = state.data.buy.items.length + state.data.buy.blackItems.length;
-      elements.status.textContent = `${totalItems} ITEMS AVAILABLE`;
 
       // Re-render current view
       if (state.currentTab === 'buy') {
@@ -453,11 +467,10 @@ const BlackMarketApp = (() => {
           
         case 'toast':
           const titles = {
-            success: 'TRANSACTION SUCCESSFUL',
-            error: 'TRANSACTION FAILED',
-            warning: 'WARNING'
+            success: 'Success',
+            error: 'Error'
           };
-          toast.show(kind, titles[kind] || 'NOTIFICATION', message || '');
+          toast.show(kind, titles[kind] || 'Notification', message || '');
           break;
       }
     });

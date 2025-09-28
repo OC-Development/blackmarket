@@ -4,35 +4,23 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Underground Black Market</title>
+  <title>Black Market</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div id="app" class="bm-root hidden">
-    <!-- Animated Background -->
-    <div class="bm-bg">
-      <div class="grid-overlay"></div>
-      <div class="scan-lines"></div>
-      <div class="glitch-overlay"></div>
-    </div>
-
     <!-- Main Container -->
     <div class="bm-container">
       <!-- Header -->
       <div class="bm-header">
         <div class="header-left">
-          <div class="logo-container">
-            <div class="logo-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
-                <path d="M2 17L12 22L22 17"/>
-                <path d="M2 12L12 17L22 12"/>
-              </svg>
-            </div>
+          <div class="logo">
+            <i class="fas fa-shield-alt"></i>
             <div class="logo-text">
-              <span class="main-title">UNDERGROUND</span>
-              <span class="sub-title">BLACK MARKET</span>
+              <span class="title">BLACK MARKET</span>
+              <span class="subtitle">Secure Trading Platform</span>
             </div>
           </div>
         </div>
@@ -40,25 +28,22 @@
         <div class="header-center">
           <div class="nav-tabs">
             <button id="tab-buy" class="nav-tab active">
-              <span class="tab-icon">🛒</span>
-              <span class="tab-text">ACQUIRE</span>
-              <div class="tab-glow"></div>
+              <i class="fas fa-shopping-cart"></i>
+              <span>Buy Items</span>
             </button>
             <button id="tab-sell" class="nav-tab">
-              <span class="tab-icon">💰</span>
-              <span class="tab-text">LIQUIDATE</span>
-              <div class="tab-glow"></div>
+              <i class="fas fa-hand-holding-usd"></i>
+              <span>Sell Items</span>
             </button>
           </div>
         </div>
 
         <div class="header-right">
-          <div class="status-panel">
-            <div class="connection-status">
-              <div class="status-dot"></div>
-              <span>SECURE CONNECTION</span>
+          <div class="status">
+            <div class="connection">
+              <i class="fas fa-wifi"></i>
+              <span>Connected</span>
             </div>
-            <div class="user-status" id="status">AUTHENTICATED</div>
           </div>
         </div>
       </div>
@@ -69,10 +54,10 @@
         <div id="view-buy" class="content-view">
           <div class="view-header">
             <h2 class="view-title">
-              <span class="title-icon">⚡</span>
-              CONTRABAND INVENTORY
+              <i class="fas fa-store"></i>
+              Available Items
             </h2>
-            <div class="view-subtitle">Select your desired items from our exclusive collection</div>
+            <p class="view-description">Browse and purchase items from our inventory</p>
           </div>
           <div class="items-grid" id="buy-grid"></div>
         </div>
@@ -81,10 +66,10 @@
         <div id="view-sell" class="content-view hidden">
           <div class="view-header">
             <h2 class="view-title">
-              <span class="title-icon">🔥</span>
-              LIQUIDATION CENTER
+              <i class="fas fa-coins"></i>
+              Sell Your Items
             </h2>
-            <div class="view-subtitle">Convert your assets into untraceable currency</div>
+            <p class="view-description">Convert your items into cash</p>
           </div>
           <div class="items-grid" id="sell-grid"></div>
         </div>
@@ -93,38 +78,38 @@
       <!-- Footer -->
       <div class="bm-footer">
         <div class="footer-left">
-          <div class="warning-text">
-            <span class="warning-icon">⚠️</span>
-            All transactions are final and untraceable
+          <div class="warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>All transactions are final and cannot be reversed</span>
           </div>
         </div>
         <div class="footer-right">
-          <button class="exit-btn" id="close-btn">
-            <span class="btn-icon">🚪</span>
-            <span class="btn-text">EXIT MARKET</span>
+          <button class="close-btn" id="close-btn">
+            <i class="fas fa-times"></i>
+            <span>Close</span>
           </button>
         </div>
       </div>
     </div>
 
     <!-- Toast Notifications -->
-    <div id="toast" class="toast-notification hidden">
+    <div id="toast" class="toast hidden">
       <div class="toast-icon"></div>
       <div class="toast-content">
         <div class="toast-title"></div>
         <div class="toast-message"></div>
       </div>
-      <div class="toast-close">×</div>
+      <button class="toast-close">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
     <!-- Loading Overlay -->
     <div class="loading-overlay hidden" id="loading">
       <div class="loading-spinner">
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring"></div>
+        <i class="fas fa-spinner fa-spin"></i>
       </div>
-      <div class="loading-text">ESTABLISHING SECURE CONNECTION...</div>
+      <div class="loading-text">Loading...</div>
     </div>
   </div>
 
