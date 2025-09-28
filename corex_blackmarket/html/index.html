@@ -4,43 +4,128 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoreX Black Market</title>
+  <title>Underground Black Market</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- NOTE: no background on body (FiveM preference) -->
-  <div id="app" class="cx-root hidden">
-    <div class="cx-panel">
-      <div class="cx-navbar">
-        <div class="brand">
-          <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12L5 10L9 14L19 4L21 6L9 18L3 12Z"/></svg>
-          <span>Black Market</span>
+  <div id="app" class="bm-root hidden">
+    <!-- Animated Background -->
+    <div class="bm-bg">
+      <div class="grid-overlay"></div>
+      <div class="scan-lines"></div>
+      <div class="glitch-overlay"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="bm-container">
+      <!-- Header -->
+      <div class="bm-header">
+        <div class="header-left">
+          <div class="logo-container">
+            <div class="logo-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                <path d="M2 17L12 22L22 17"/>
+                <path d="M2 12L12 17L22 12"/>
+              </svg>
+            </div>
+            <div class="logo-text">
+              <span class="main-title">UNDERGROUND</span>
+              <span class="sub-title">BLACK MARKET</span>
+            </div>
+          </div>
         </div>
-        <div class="tabs">
-          <button id="tab-buy" class="tab active">Buy</button>
-          <button id="tab-sell" class="tab">Sell</button>
+        
+        <div class="header-center">
+          <div class="nav-tabs">
+            <button id="tab-buy" class="nav-tab active">
+              <span class="tab-icon">🛒</span>
+              <span class="tab-text">ACQUIRE</span>
+              <div class="tab-glow"></div>
+            </button>
+            <button id="tab-sell" class="nav-tab">
+              <span class="tab-icon">💰</span>
+              <span class="tab-text">LIQUIDATE</span>
+              <div class="tab-glow"></div>
+            </button>
+          </div>
         </div>
-        <div class="status" id="status"></div>
+
+        <div class="header-right">
+          <div class="status-panel">
+            <div class="connection-status">
+              <div class="status-dot"></div>
+              <span>SECURE CONNECTION</span>
+            </div>
+            <div class="user-status" id="status">AUTHENTICATED</div>
+          </div>
+        </div>
       </div>
 
-      <div class="cx-content">
-        <!-- BUY VIEW (no categories, just gallery) -->
-        <div id="view-buy" class="view">
-          <div class="grid" id="buy-grid"></div>
+      <!-- Content Area -->
+      <div class="bm-content">
+        <!-- Buy View -->
+        <div id="view-buy" class="content-view">
+          <div class="view-header">
+            <h2 class="view-title">
+              <span class="title-icon">⚡</span>
+              CONTRABAND INVENTORY
+            </h2>
+            <div class="view-subtitle">Select your desired items from our exclusive collection</div>
+          </div>
+          <div class="items-grid" id="buy-grid"></div>
         </div>
 
-        <!-- SELL VIEW (whitelisted items only) -->
-        <div id="view-sell" class="view hidden">
-          <div class="grid" id="sell-grid"></div>
+        <!-- Sell View -->
+        <div id="view-sell" class="content-view hidden">
+          <div class="view-header">
+            <h2 class="view-title">
+              <span class="title-icon">🔥</span>
+              LIQUIDATION CENTER
+            </h2>
+            <div class="view-subtitle">Convert your assets into untraceable currency</div>
+          </div>
+          <div class="items-grid" id="sell-grid"></div>
         </div>
       </div>
 
-      <div class="cx-footer">
-        <button class="ghost" id="close-btn">Close (ESC)</button>
+      <!-- Footer -->
+      <div class="bm-footer">
+        <div class="footer-left">
+          <div class="warning-text">
+            <span class="warning-icon">⚠️</span>
+            All transactions are final and untraceable
+          </div>
+        </div>
+        <div class="footer-right">
+          <button class="exit-btn" id="close-btn">
+            <span class="btn-icon">🚪</span>
+            <span class="btn-text">EXIT MARKET</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <div id="toast" class="toast hidden"></div>
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast-notification hidden">
+      <div class="toast-icon"></div>
+      <div class="toast-content">
+        <div class="toast-title"></div>
+        <div class="toast-message"></div>
+      </div>
+      <div class="toast-close">×</div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loading">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+      </div>
+      <div class="loading-text">ESTABLISHING SECURE CONNECTION...</div>
+    </div>
   </div>
 
   <script src="script.js"></script>
